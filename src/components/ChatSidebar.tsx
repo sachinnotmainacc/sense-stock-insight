@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, MessageSquare, Calendar, LineChart, Share2, Star, Trash2 } from "lucide-react";
+import { Plus, MessageSquare, Calendar, Star, Trash2 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 interface ChatSession {
@@ -58,31 +58,6 @@ const ChatSidebar = ({ onNewChat, activeChatId }: ChatSidebarProps) => {
             </Link>
           ))}
         </div>
-        
-        <div className="mt-4 space-y-1 py-2">
-          <div className="text-xs font-medium text-gray-400 px-3 py-2">Watchlist</div>
-          <Link 
-            to="/chat?stock=AAPL"
-            className="flex items-center p-3 text-sm rounded-lg transition-colors hover:bg-white/5 text-gray-300"
-          >
-            <LineChart className="h-4 w-4 mr-2 flex-shrink-0" />
-            <div className="truncate">AAPL</div>
-          </Link>
-          <Link 
-            to="/chat?stock=TSLA"
-            className="flex items-center p-3 text-sm rounded-lg transition-colors hover:bg-white/5 text-gray-300"
-          >
-            <LineChart className="h-4 w-4 mr-2 flex-shrink-0" />
-            <div className="truncate">TSLA</div>
-          </Link>
-          <Link 
-            to="/chat?stock=AMZN"
-            className="flex items-center p-3 text-sm rounded-lg transition-colors hover:bg-white/5 text-gray-300"
-          >
-            <LineChart className="h-4 w-4 mr-2 flex-shrink-0" />
-            <div className="truncate">AMZN</div>
-          </Link>
-        </div>
       </ScrollArea>
       
       {/* Footer */}
@@ -90,9 +65,6 @@ const ChatSidebar = ({ onNewChat, activeChatId }: ChatSidebarProps) => {
         <div className="flex items-center justify-between mb-2">
           <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-gray-400 hover:text-white hover:bg-white/10">
             <Star className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-gray-400 hover:text-white hover:bg-white/10">
-            <Share2 className="h-4 w-4" />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-gray-400 hover:text-white hover:bg-white/10">
             <Trash2 className="h-4 w-4" />

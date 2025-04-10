@@ -49,26 +49,30 @@ const Chat = () => {
     
     // Placeholder for API call to Flask backend
     try {
-      // Simulating API call delay
+      // The URL will be replaced with your actual Flask backend endpoint
+      const API_ENDPOINT = "/api/chat"; // This will be updated later
+      
+      // For now, we're simulating the API call
+      // This section will be replaced with actual fetch code when you provide the endpoint
       await new Promise((resolve) => setTimeout(resolve, 2000));
       
-      // For now, we'll use this placeholder response
+      // Placeholder response until Flask backend is connected
       const placeholderResponse = {
         id: (Date.now() + 1).toString(),
-        content: "The Flask backend isn't connected yet. Once connected, I'll provide real analysis of why stocks are moving based on actual market data and news.",
+        content: "This is a placeholder response. Once the Flask backend is connected to the endpoint, this will be replaced with real market analysis data.",
         isUser: false,
       };
       
       setMessages((prev) => [...prev, placeholderResponse]);
       toast({
-        title: "API Success",
-        description: "Connected to NewsSense backend",
+        title: "API Connection Ready",
+        description: "Your app is ready to connect to the Flask backend",
         variant: "default",
       });
     } catch (error) {
       toast({
         title: "API Error",
-        description: "Failed to connect to NewsSense backend",
+        description: "Failed to connect to backend. Check your configuration.",
         variant: "destructive",
       });
     } finally {
@@ -137,7 +141,7 @@ const Chat = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan"></span>
                   </span>
-                  <span className="hidden sm:inline">Live data from Flask backend</span>
+                  <span className="hidden sm:inline">Ready for Flask backend</span>
                 </div>
                 <Button variant="outline" size="icon" className="rounded-full border-white/10 text-gray-400 hover:text-white hover:bg-white/5">
                   <BellRing className="h-4 w-4" />
