@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, LineChart, Globe, Brain, Zap, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,19 +31,6 @@ const Index = () => {
             {/* Market Overview */}
             <div className="w-full max-w-5xl mt-10">
               <StockOverview />
-            </div>
-            
-            {/* Hero Chart */}
-            <div className="mt-10 w-full max-w-5xl p-4 glass-card rounded-xl shadow-glow-sm">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-grotesk font-medium">Market Performance</h3>
-                <div className="flex space-x-2">
-                  <span className="px-2 py-1 rounded-full text-xs bg-white/10">6M</span>
-                  <span className="px-2 py-1 rounded-full text-xs bg-neon-purple/20 text-neon-purple">YTD</span>
-                  <span className="px-2 py-1 rounded-full text-xs bg-white/10">1Y</span>
-                </div>
-              </div>
-              <StockChart />
             </div>
           </div>
         </div>
@@ -103,7 +89,13 @@ const Index = () => {
           <div className="flex flex-col md:flex-row items-center md:space-x-12">
             <div className="md:w-1/2 mb-8 md:mb-0">
               <div className="glass-card rounded-xl p-6 h-full shadow-glow-sm">
-                <StockChart className="h-[300px]" />
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-grotesk font-medium">Market Trends (Oct-Apr)</h3>
+                  <div className="flex space-x-2">
+                    <span className="px-2 py-1 rounded-full text-xs bg-neon-purple/20 text-neon-purple">Live Data</span>
+                  </div>
+                </div>
+                <StockChart className="h-[300px]" useStaticData={false} />
               </div>
             </div>
             
