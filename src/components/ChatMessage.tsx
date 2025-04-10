@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { LineChart } from "lucide-react";
 
 interface ChatMessageProps {
   message: string;
@@ -36,22 +37,25 @@ const ChatMessage = ({ message, isUser, isLoading = false }: ChatMessageProps) =
 
   return (
     <div className={cn(
-      "w-full py-4",
-      isUser ? "bg-darkbg" : "bg-darkbg-lighter border-y border-white/5"
+      "w-full py-4 rounded-lg",
+      isUser ? "bg-darkbg" : "bg-darkbg-lighter border border-white/5"
     )}>
-      <div className="container mx-auto max-w-3xl px-4 flex">
-        <div className="w-8 h-8 rounded-full flex-shrink-0 mr-4 flex items-center justify-center">
+      <div className="flex">
+        <div className="w-10 h-10 rounded-full flex-shrink-0 mr-4 flex items-center justify-center">
           {isUser ? (
-            <div className="bg-neon-purple/30 text-white w-full h-full rounded-full flex items-center justify-center text-sm font-semibold">
+            <div className="bg-neon-purple/30 text-white w-full h-full rounded-full flex items-center justify-center text-sm font-semibold shadow-glow-sm">
               U
             </div>
           ) : (
-            <div className="bg-neon-cyan/30 text-white w-full h-full rounded-full flex items-center justify-center text-sm font-semibold">
-              NS
+            <div className="bg-neon-cyan/30 text-white w-full h-full rounded-full flex items-center justify-center text-sm font-semibold shadow-glow-sm">
+              <LineChart className="h-5 w-5" />
             </div>
           )}
         </div>
         <div className="flex-1">
+          <div className="text-xs text-gray-400 mb-1">
+            {isUser ? "You" : "NewsSense AI"}
+          </div>
           {isUser ? (
             <div className="text-white">{message}</div>
           ) : isLoading ? (
@@ -61,7 +65,7 @@ const ChatMessage = ({ message, isUser, isLoading = false }: ChatMessageProps) =
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
             </div>
           ) : (
-            <div className="text-white">
+            <div className="text-white prose prose-invert prose-sm max-w-none">
               {displayedMessage}
               {isTyping && <span className="typing-cursor"></span>}
             </div>
