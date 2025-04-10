@@ -35,36 +35,39 @@ const ChatMessage = ({ message, isUser, isLoading = false }: ChatMessageProps) =
   }, [message, isUser, isLoading]);
 
   return (
-    <div
-      className={cn(
-        "mb-4 max-w-[90%] md:max-w-[70%] animate-fade-in",
-        isUser ? "self-end" : "self-start"
-      )}
-    >
-      <div
-        className={cn(
-          "rounded-xl p-4",
-          isUser
-            ? "bg-neon-purple text-white"
-            : "glass-card border-white/10"
-        )}
-      >
-        {isUser ? (
-          <p>{message}</p>
-        ) : isLoading ? (
-          <div className="flex space-x-2 items-center h-6">
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-          </div>
-        ) : (
-          <p>{displayedMessage}{isTyping && <span className="typing-cursor"></span>}</p>
-        )}
+    <div className={cn(
+      "w-full py-4",
+      isUser ? "bg-darkbg" : "bg-darkbg-lighter border-y border-white/5"
+    )}>
+      <div className="container mx-auto max-w-3xl px-4 flex">
+        <div className="w-8 h-8 rounded-full flex-shrink-0 mr-4 flex items-center justify-center">
+          {isUser ? (
+            <div className="bg-neon-purple/30 text-white w-full h-full rounded-full flex items-center justify-center text-sm font-semibold">
+              U
+            </div>
+          ) : (
+            <div className="bg-neon-cyan/30 text-white w-full h-full rounded-full flex items-center justify-center text-sm font-semibold">
+              NS
+            </div>
+          )}
+        </div>
+        <div className="flex-1">
+          {isUser ? (
+            <div className="text-white">{message}</div>
+          ) : isLoading ? (
+            <div className="flex space-x-2 items-center h-6">
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+            </div>
+          ) : (
+            <div className="text-white">
+              {displayedMessage}
+              {isTyping && <span className="typing-cursor"></span>}
+            </div>
+          )}
+        </div>
       </div>
-      
-      {!isUser && !isLoading && (
-        <div className="text-xs text-gray-500 mt-1 ml-1">NewsSense AI</div>
-      )}
     </div>
   );
 };
