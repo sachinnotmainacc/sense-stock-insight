@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FeatureCard from "@/components/FeatureCard";
+import StockChart from "@/components/StockChart";
+import StockOverview from "@/components/StockOverview";
 
 const Index = () => {
   return (
@@ -12,7 +14,7 @@ const Index = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24">
+      <section className="pt-32 pb-8 md:pt-40 md:pb-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center text-center">
             <h1 className="font-grotesk text-4xl md:text-6xl font-bold leading-tight mb-6 max-w-3xl">
@@ -21,27 +23,28 @@ const Index = () => {
             <p className="text-xl text-gray-300 mb-8 max-w-2xl">
               Real-time AI that explains stock & fund drops with real news analysis.
             </p>
-            <Button asChild size="lg" className="bg-neon-purple hover:bg-neon-purple/80 text-white">
+            <Button asChild size="lg" className="bg-neon-purple hover:bg-neon-purple/80 text-white shadow-glow-sm">
               <Link to="/chat" className="flex items-center">
                 Launch AI Chat <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
+
+            {/* Market Overview */}
+            <div className="w-full max-w-5xl mt-10">
+              <StockOverview />
+            </div>
             
-            {/* Hero Image or Animation */}
-            <div className="mt-16 w-full max-w-4xl p-4 glass-card rounded-xl overflow-hidden">
-              <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-br from-darkbg-lighter to-darkbg flex items-center justify-center rounded-lg">
-                <div className="text-center p-8 max-w-md">
-                  <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-neon-purple/20 flex items-center justify-center">
-                      <Brain className="h-8 w-8 text-neon-purple" />
-                    </div>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-grotesk font-medium mb-4">Intelligent Stock Analysis</h3>
-                  <p className="text-gray-400">
-                    NewsSense analyzes financial news, social media sentiment, and market patterns to explain stock movements.
-                  </p>
+            {/* Hero Chart */}
+            <div className="mt-10 w-full max-w-5xl p-4 glass-card rounded-xl shadow-glow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-grotesk font-medium">Market Performance</h3>
+                <div className="flex space-x-2">
+                  <span className="px-2 py-1 rounded-full text-xs bg-white/10">6M</span>
+                  <span className="px-2 py-1 rounded-full text-xs bg-neon-purple/20 text-neon-purple">YTD</span>
+                  <span className="px-2 py-1 rounded-full text-xs bg-white/10">1Y</span>
                 </div>
               </div>
+              <StockChart />
             </div>
           </div>
         </div>
@@ -99,14 +102,8 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center md:space-x-12">
             <div className="md:w-1/2 mb-8 md:mb-0">
-              <div className="glass-card rounded-xl p-6 h-full">
-                <div className="bg-darkbg-lighter p-6 rounded-lg h-[300px] flex items-center justify-center">
-                  <div className="text-center">
-                    <code className="text-neon-cyan block mb-4 font-mono text-sm">{'from flask import Flask'}</code>
-                    <code className="text-neon-purple block mb-4 font-mono text-sm">{'import React from "react"'}</code>
-                    <code className="text-white/70 block font-mono text-sm">{'// Real code, real data'}</code>
-                  </div>
-                </div>
+              <div className="glass-card rounded-xl p-6 h-full shadow-glow-sm">
+                <StockChart className="h-[300px]" />
               </div>
             </div>
             
@@ -120,7 +117,7 @@ const Index = () => {
               <p className="text-gray-300 mb-8">
                 We don't use mock data or pre-written responses. Every analysis is performed on fresh data pulled from the web, processed through our Flask API, and delivered to you instantly.
               </p>
-              <Button asChild size="lg" className="bg-neon-purple hover:bg-neon-purple/80 text-white">
+              <Button asChild size="lg" className="bg-neon-purple hover:bg-neon-purple/80 text-white shadow-glow-sm">
                 <Link to="/chat" className="flex items-center">
                   Try the Chatbot Now <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -142,7 +139,7 @@ const Index = () => {
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             Start a conversation with NewsSense AI and get real answers about market movements.
           </p>
-          <Button asChild size="lg" className="bg-neon-purple hover:bg-neon-purple/80 text-white">
+          <Button asChild size="lg" className="bg-neon-purple hover:bg-neon-purple/80 text-white shadow-glow-sm">
             <Link to="/chat" className="flex items-center">
               Try the Chatbot Now <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
