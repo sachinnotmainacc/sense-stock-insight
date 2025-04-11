@@ -10,6 +10,23 @@ const finnhubClient = axios.create({
   }
 });
 
+// Add request/response interceptors for debugging
+finnhubClient.interceptors.request.use(request => {
+  console.log('Finnhub API Request:', request.url, request.params);
+  return request;
+});
+
+finnhubClient.interceptors.response.use(
+  response => {
+    console.log('Finnhub API Response:', response.config.url, response.status, response.data);
+    return response;
+  },
+  error => {
+    console.error('Finnhub API Error:', error.config?.url, error.response?.status, error.response?.data);
+    return Promise.reject(error);
+  }
+);
+
 export interface StockQuote {
   c: number;  // Current price
   d: number;  // Change
@@ -65,9 +82,21 @@ export const getMultipleStockQuotes = async (symbols: string[]): Promise<Record<
     symbols.map(async (symbol) => {
       try {
         const quote = await getStockQuote(symbol);
+        
+        // Verify that we have valid price data (c should be non-zero for valid quotes)
+        if (quote.c <= 0) {
+          console.warn(`Invalid price data for ${symbol}, price: ${quote.c}`);
+        }
+        
         quotes[symbol] = quote;
       } catch (error) {
         console.error(`Error fetching quote for ${symbol}:`, error);
+        // Add a placeholder with error info for debugging in development
+        if (process.env.NODE_ENV === 'development') {
+          quotes[symbol] = {
+            c: 0, d: 0, dp: 0, h: 0, l: 0, o: 0, pc: 0, t: 0
+          };
+        }
       }
     })
   );
