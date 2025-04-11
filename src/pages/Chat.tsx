@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Send, ArrowLeft, MenuIcon, X, Info, LineChart, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,11 @@ interface Message {
   id: string;
   content: string;
   isUser: boolean;
+  chartData?: any;
 }
+
+// Define the backend API URL based on environment
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,6 +37,19 @@ const Chat = () => {
     inputRef.current?.focus();
   }, [messages]);
 
+  useEffect(() => {
+    // Load suggested questions when component mounts
+    fetch(`${API_BASE_URL}/api/suggestions`)
+      .then(response => response.json())
+      .then(data => {
+        // You can use this data to populate suggestion buttons if needed
+        console.log("Suggestions loaded:", data.suggestions);
+      })
+      .catch(error => {
+        console.error("Failed to load suggestions:", error);
+      });
+  }, []);
+
   const handleSendMessage = async () => {
     if (input.trim() === "") return;
     
@@ -47,34 +63,43 @@ const Chat = () => {
     setInput("");
     setIsLoading(true);
     
-    // Placeholder for API call to Flask backend
     try {
-      // The URL will be replaced with your actual Flask backend endpoint
-      const API_ENDPOINT = "/api/chat"; // This will be updated later
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: input }),
+      });
       
-      // For now, we're simulating the API call
-      // This section will be replaced with actual fetch code when you provide the endpoint
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
       
-      // Placeholder response until Flask backend is connected
-      const placeholderResponse = {
-        id: (Date.now() + 1).toString(),
-        content: "This is a placeholder response. Once the Flask backend is connected to the endpoint, this will be replaced with real market analysis data.",
+      const data = await response.json();
+      
+      const botMessage: Message = {
+        id: data.id || (Date.now() + 1).toString(),
+        content: data.content || "Sorry, I couldn't process that request.",
         isUser: false,
+        chartData: data.chart_data,
       };
       
-      setMessages((prev) => [...prev, placeholderResponse]);
-      toast({
-        title: "API Connection Ready",
-        description: "Your app is ready to connect to the Flask backend",
-        variant: "default",
-      });
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
+      console.error('API Error:', error);
       toast({
         title: "API Error",
         description: "Failed to connect to backend. Check your configuration.",
         variant: "destructive",
       });
+      
+      // Add error message
+      setMessages((prev) => [...prev, {
+        id: (Date.now() + 1).toString(),
+        content: "Sorry, I couldn't connect to the backend server. Please try again later.",
+        isUser: false,
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +166,7 @@ const Chat = () => {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan"></span>
                   </span>
-                  <span className="hidden sm:inline">Ready for Flask backend</span>
+                  <span className="hidden sm:inline">Connected to Flask backend</span>
                 </div>
                 <Button variant="outline" size="icon" className="rounded-full border-white/10 text-gray-400 hover:text-white hover:bg-white/5">
                   <BellRing className="h-4 w-4" />
@@ -163,7 +188,7 @@ const Chat = () => {
                     Ask NewsSense why a stock is moving, or try one of these:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6 w-full max-w-lg">
-                    {['Why is AAPL dropping today?', 'What\'s happening with TSLA stock?', 'Explain QQQ movement', 'Why did AMZN stock fall?'].map((suggestion) => (
+                    {['Why is NIFTY down today?', 'How is SBI Mutual Fund performing?', 'Compare NIFTY with HDFC AMC', 'What are the top financial news today?'].map((suggestion) => (
                       <Button 
                         key={suggestion}
                         variant="outline"
@@ -184,6 +209,7 @@ const Chat = () => {
                     <ChatMessage
                       key={message.id}
                       message={message.content}
+                      chartData={message.chartData}
                       isUser={message.isUser}
                     />
                   ))}
