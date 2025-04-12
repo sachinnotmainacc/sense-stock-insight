@@ -1,136 +1,117 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, LineChart, MessageSquare } from "lucide-react";
+import { Menu, X, MessageSquare, Home, Newspaper, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      setIsScrolled(offset > 10);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
-    <nav
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-darkbg/90 backdrop-blur-md py-3 shadow-lg"
-          : "bg-transparent py-5"
-      }`}
-    >
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link
-          to="/"
-          className="flex items-center space-x-2 font-grotesk text-xl font-bold"
-        >
-          <span className="text-gradient-purple">NewsSense</span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <Link 
-                  to="/" 
-                  className={`px-2 py-2 text-sm transition-colors hover:text-white ${
-                    location.pathname === "/" 
-                      ? "text-white font-medium" 
-                      : "text-white/70"
-                  }`}
-                >
-                  Home
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link 
-                  to="/chat" 
-                  className={`px-2 py-2 text-sm transition-colors hover:text-white flex items-center ${
-                    location.pathname === "/chat" 
-                      ? "text-white font-medium" 
-                      : "text-white/70"
-                  }`}
-                >
-                  <MessageSquare className="h-4 w-4 mr-1" />
-                  AI Chat
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-          
-          <Button asChild variant="secondary" className="bg-neon-purple text-white hover:bg-neon-purple/80">
-            <Link to="/chat" className="flex items-center">
-              <LineChart className="h-4 w-4 mr-2" />
-              Stock Analysis
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-darkbg border-b border-white/10 h-16">
+        <div className="container px-4 mx-auto max-w-7xl flex items-center justify-between h-full">
+          <div className="flex items-center gap-2">
+            <Link to="/" className="text-xl font-grotesk font-bold text-white">
+              <span className="text-gradient-purple">NewsSense</span>
             </Link>
-          </Button>
-        </div>
+            <div className="hidden md:flex items-center space-x-1 ml-6">
+              <Link to="/">
+                <Button 
+                  variant={isActive("/") ? "secondary" : "ghost"} 
+                  size="sm" 
+                  className="text-sm"
+                >
+                  <Home className="h-4 w-4 mr-2" />
+                  Home
+                </Button>
+              </Link>
+              <Link to="/chat">
+                <Button 
+                  variant={isActive("/chat") ? "secondary" : "ghost"} 
+                  size="sm" 
+                  className="text-sm"
+                >
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Chat
+                </Button>
+              </Link>
+              <Link to="/news">
+                <Button 
+                  variant={isActive("/news") ? "secondary" : "ghost"} 
+                  size="sm" 
+                  className="text-sm"
+                >
+                  <Newspaper className="h-4 w-4 mr-2" />
+                  News
+                </Button>
+              </Link>
+            </div>
+          </div>
 
-        {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-            className="text-white"
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </Button>
+          <div>
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            <div className="hidden md:flex items-center space-x-2">
+              <a 
+                href="https://github.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white text-sm flex items-center"
+              >
+                <Info className="h-4 w-4 mr-1" />
+                About
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-darkbg/95 backdrop-blur-md shadow-lg py-4 animate-fade-in">
-          <div className="container mx-auto px-4 flex flex-col space-y-4">
-            <Link
-              to="/"
-              className={`px-4 py-3 hover:bg-white/5 rounded-md transition-colors ${
-                location.pathname === "/" ? "bg-white/10 text-white" : "text-gray-300"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              to="/chat"
-              className={`px-4 py-3 hover:bg-white/5 rounded-md transition-colors ${
-                location.pathname === "/chat" ? "bg-white/10 text-white" : "text-gray-300"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              AI Chat
-            </Link>
-            <Link
-              to="/chat"
-              className="px-4 py-3 bg-neon-purple text-white rounded-md hover:bg-neon-purple/80 transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Stock Analysis
-            </Link>
+        <div className="fixed inset-0 z-40 bg-darkbg pt-16">
+          <div className="container px-4 py-6 mx-auto">
+            <nav className="flex flex-col space-y-4">
+              <Link to="/" onClick={() => setIsMenuOpen(false)}>
+                <Button 
+                  variant={isActive("/") ? "secondary" : "ghost"} 
+                  size="lg" 
+                  className="w-full justify-start"
+                >
+                  <Home className="h-5 w-5 mr-3" />
+                  Home
+                </Button>
+              </Link>
+              <Link to="/chat" onClick={() => setIsMenuOpen(false)}>
+                <Button 
+                  variant={isActive("/chat") ? "secondary" : "ghost"} 
+                  size="lg" 
+                  className="w-full justify-start"
+                >
+                  <MessageSquare className="h-5 w-5 mr-3" />
+                  Chat
+                </Button>
+              </Link>
+              <Link to="/news" onClick={() => setIsMenuOpen(false)}>
+                <Button 
+                  variant={isActive("/news") ? "secondary" : "ghost"} 
+                  size="lg" 
+                  className="w-full justify-start"
+                >
+                  <Newspaper className="h-5 w-5 mr-3" />
+                  News
+                </Button>
+              </Link>
+            </nav>
           </div>
         </div>
       )}
-    </nav>
+    </>
   );
 };
 
