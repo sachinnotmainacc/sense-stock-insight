@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, ArrowLeft, MenuIcon, X, Info, LineChart, BellRing } from "lucide-react";
+import { Send, ArrowLeft, MenuIcon, X, Info, LineChart, BellRing, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -68,6 +68,9 @@ const Chat = () => {
       // Always use the professional endpoint
       const endpoint = `${API_BASE_URL}/api/professional`;
       
+      console.log("API Endpoint:", endpoint);
+      console.log("Sending request:", input);
+      
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -81,6 +84,8 @@ const Chat = () => {
       }
       
       const data = await response.json();
+      
+      console.log("API Response:", data);
       
       const botMessage: Message = {
         id: data.id || (Date.now() + 1).toString(),
@@ -125,6 +130,60 @@ const Chat = () => {
     inputRef.current?.focus();
   };
 
+  // Function to force refresh stock data for NIFTY
+  const refreshStockData = async () => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/professional`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: "How is NIFTY performing today?" }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      console.log("Refresh API Response:", data);
+      
+      const refreshMessage: Message = {
+        id: Date.now().toString(),
+        content: "Refreshing NIFTY data...",
+        isUser: true,
+      };
+      
+      const botMessage: Message = {
+        id: data.id || (Date.now() + 1).toString(),
+        content: data.content || "Sorry, I couldn't process that request.",
+        isUser: false,
+        chartData: data.chart_data,
+        format: "professional"
+      };
+      
+      setMessages([refreshMessage, botMessage]);
+      
+      toast({
+        title: "Data Refreshed",
+        description: "Latest NIFTY data retrieved from the server",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error('Refresh Error:', error);
+      toast({
+        title: "Refresh Failed",
+        description: "Failed to refresh stock data. Check server connection.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col bg-darkbg">
       {/* Navbar */}
@@ -166,6 +225,16 @@ const Chat = () => {
                 </Button>
               </div>
               <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={refreshStockData}
+                  disabled={isLoading}
+                  className="rounded-full border-white/10 hover:bg-white/5 hover:text-neon-cyan flex items-center gap-1"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline text-xs">Refresh NIFTY</span>
+                </Button>
                 <div className="flex items-center space-x-1 text-gray-400 text-sm bg-darkbg px-3 py-1.5 rounded-full border border-white/10">
                   <span className="relative flex h-2 w-2 mr-1">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
