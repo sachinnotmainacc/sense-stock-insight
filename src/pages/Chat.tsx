@@ -13,6 +13,7 @@ interface Message {
   content: string;
   isUser: boolean;
   chartData?: any;
+  format?: string;
 }
 
 // Define the backend API URL based on environment
@@ -64,7 +65,10 @@ const Chat = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/chat`, {
+      // Always use the professional endpoint
+      const endpoint = `${API_BASE_URL}/api/professional`;
+      
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,6 +87,7 @@ const Chat = () => {
         content: data.content || "Sorry, I couldn't process that request.",
         isUser: false,
         chartData: data.chart_data,
+        format: "professional"
       };
       
       setMessages((prev) => [...prev, botMessage]);
@@ -155,7 +160,7 @@ const Chat = () => {
           <header className="bg-darkbg-lighter border-b border-white/10 p-4">
             <div className="container mx-auto flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <h1 className="font-grotesk font-bold text-gradient-purple text-xl">NewsSense Chat</h1>
+                <h1 className="font-grotesk font-bold text-gradient-purple text-xl">NewsSense Pro</h1>
                 <Button variant="ghost" size="icon" className="rounded-full h-7 w-7">
                   <Info className="h-4 w-4 text-gray-400" />
                 </Button>
@@ -183,12 +188,12 @@ const Chat = () => {
                   <div className="w-16 h-16 rounded-full bg-neon-purple/20 flex items-center justify-center mb-6">
                     <LineChart className="h-8 w-8 text-neon-purple" />
                   </div>
-                  <h2 className="text-xl font-grotesk font-medium mb-2 text-center">Financial insights at your fingertips</h2>
+                  <h2 className="text-xl font-grotesk font-medium mb-2 text-center">Professional Financial Analysis</h2>
                   <p className="text-gray-400 text-center max-w-md">
-                    Ask NewsSense why a stock is moving, or try one of these:
+                    Ask NewsSense Pro about market trends, stock performance, or try one of these:
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6 w-full max-w-lg">
-                    {['Why is NIFTY down today?', 'How is SBI Mutual Fund performing?', 'Compare NIFTY with HDFC AMC', 'What are the top financial news today?'].map((suggestion) => (
+                    {['Why is NIFTY down today?', 'How is RELIANCE performing?', 'Compare NIFTY with SENSEX', 'Analysis of banking sector'].map((suggestion) => (
                       <Button 
                         key={suggestion}
                         variant="outline"
@@ -211,6 +216,7 @@ const Chat = () => {
                       message={message.content}
                       chartData={message.chartData}
                       isUser={message.isUser}
+                      format={message.format}
                     />
                   ))}
                   
@@ -237,7 +243,7 @@ const Chat = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask NewsSense why a stock is down…"
+                  placeholder="Ask for professional financial analysis..."
                   className="bg-darkbg border-white/10 focus:border-neon-purple"
                 />
                 <Button

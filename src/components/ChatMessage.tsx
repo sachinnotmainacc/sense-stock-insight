@@ -2,18 +2,22 @@ import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { LineChart } from "lucide-react";
 import Plotly from 'plotly.js-dist-min';
+import ReactMarkdown from 'react-markdown';
 
 interface ChatMessageProps {
   message: string;
   isUser: boolean;
   isLoading?: boolean;
   chartData?: any;
+  format?: string;
 }
 
-const ChatMessage = ({ message, isUser, isLoading = false, chartData }: ChatMessageProps) => {
+const ChatMessage = ({ message, isUser, isLoading = false, chartData, format }: ChatMessageProps) => {
   const [displayedMessage, setDisplayedMessage] = useState("");
   const [isTyping, setIsTyping] = useState(!isUser && message.length > 0);
   const chartRef = useRef<HTMLDivElement>(null);
+  // Always use professional format as default
+  const isProfessionalFormat = true;
 
   useEffect(() => {
     if (!isUser && message.length > 0 && !isLoading) {
@@ -52,6 +56,38 @@ const ChatMessage = ({ message, isUser, isLoading = false, chartData }: ChatMess
     }
   }, [chartData]);
 
+  // Render Markdown or plain text based on the message format
+  const renderMessage = () => {
+    if (isProfessionalFormat) {
+      return (
+        <div className="professional-analysis prose prose-invert prose-headings:text-neon-cyan prose-headings:font-grotesk prose-headings:font-semibold prose-h3:text-base max-w-none">
+          <ReactMarkdown
+            components={{
+              h3: ({node, ...props}) => <h3 className="mt-4 mb-2 text-neon-cyan" {...props} />,
+              ul: ({node, ...props}) => <ul className="ml-4 space-y-1 my-2" {...props} />,
+              li: ({node, ...props}) => <li className="text-sm list-item list-disc ml-4" {...props} />,
+              a: ({node, href, ...props}) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-neon-cyan hover:underline" {...props} />,
+              hr: ({node, ...props}) => <hr className="border-white/10 my-3" {...props} />,
+              p: ({node, ...props}) => <p className="my-2 text-sm" {...props} />,
+              strong: ({node, ...props}) => <strong className="font-semibold text-white" {...props} />
+            }}
+          >
+            {displayedMessage}
+          </ReactMarkdown>
+          {isTyping && <span className="typing-cursor"></span>}
+        </div>
+      );
+    }
+
+    // Default rendering for regular messages
+    return (
+      <div className="text-white prose prose-invert prose-sm max-w-none">
+        {displayedMessage}
+        {isTyping && <span className="typing-cursor"></span>}
+      </div>
+    );
+  };
+
   return (
     <div className={cn(
       "w-full py-4 rounded-lg",
@@ -83,10 +119,7 @@ const ChatMessage = ({ message, isUser, isLoading = false, chartData }: ChatMess
             </div>
           ) : (
             <>
-              <div className="text-white prose prose-invert prose-sm max-w-none">
-                {displayedMessage}
-                {isTyping && <span className="typing-cursor"></span>}
-              </div>
+              {renderMessage()}
               
               {chartData && (
                 <div className="mt-4 bg-darkbg border border-white/10 rounded-lg overflow-hidden">
